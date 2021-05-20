@@ -43,7 +43,7 @@ coding in python
 #### 不基于模型的控制
 #### （1）MC_blackjack_control.py，基于MC的模型控制
 utils.py中的epsilon_greedy_policy的实现示意图：
-![pic](picture/IMG_E1226.JPG)
+![Image text](picture/IMG_E1226.JPG)
 #### （2）
 
 
