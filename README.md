@@ -2,6 +2,9 @@
 @[TOC](daily coding exercise)
 # reference
 一些练习过程中遇到的有用的参考链接
+# daily_exercise
+## leetcode_exercise
+leetcode算法题目
 # p_code
 coding in python
 ## RL
@@ -40,7 +43,7 @@ coding in python
 #### 不基于模型的控制
 #### （1）MC_blackjack_control.py，基于MC的模型控制
 utils.py中的epsilon_greedy_policy的实现示意图：
-![pic]()
+![pic](coding-exercise/picture/IMG_E1226.JPG)
 #### （2）
 
 
