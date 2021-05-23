@@ -5,6 +5,12 @@
 #include<algorithm>
 #include<functional>
 #include<math.h>
+#include<string>
+#include<cstring>
+#include<unordered_map>
+#include<unordered_set>
+#include<map>
+#include<set>
 using namespace std;
 
 //239-双端队列
@@ -185,5 +191,152 @@ public:
         vector<vector<int>> right = getSkyline(tmp2);
         //然后合并
         return merge(left,right);
+    }
+};
+
+
+//1:hash表
+class Solution {
+public:
+//比较直接的做法是首先进行排序，然后二分查找相应的值
+//但是如果可以根据差值找到相应的值更直接，但是如果直接使用数组并且value作为index，那么会很浪费空间
+//使用map，key为数值，value为index
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int,int> hash;
+        vector<int> ans;
+        int n = nums.size();
+        for(int i = 0;i<n;++i)
+        {
+            int num  = nums[i];
+            auto pos = hash.find(target-num);
+            if(pos == hash.end())
+            {
+                hash[num] = i;
+            }
+            else
+            {
+                ans.push_back(pos->second);
+                ans.push_back(i);
+                break;
+            }
+        }
+        return ans;
+    }
+};
+
+//128:使用set进行去重，并且hash表在O（1）时间内进行查找
+class Solution {
+public:
+//遍历每个数作为开始，看连续的数是否在在hash表中
+//并且不要重复判断
+    int longestConsecutive(vector<int>& nums) {
+        unordered_set<int> s;
+        int n = nums.size();
+        //因为要找连续的，所以先除掉连续的数字
+        for(int i = 0;i<n;++i)
+        s.insert(nums[i]);
+        int max_len = 0;
+        int cur_len = 0;
+        int cur_num = 0;
+        for(const int& num:s)
+        {
+            //如果之前的那个数已经作为开始进行计算了，那么就直接跳过这个数字
+            if(!s.count(num-1))
+            {
+                cur_len = 1;
+                cur_num = num;
+            while(s.count(cur_num+1))
+            {
+                cur_num += 1;
+                cur_len += 1;
+            }
+            max_len = max(max_len,cur_len);
+            }
+        }
+        return max_len;
+    }
+};
+
+//149:hash表+数学知识
+class Solution {
+public:
+//关键知识：一个点加上斜率可以确定一条直线
+//遍历每个点，以该点作为中心点，然后考虑所有可能的斜率，为避免所有重复的考虑，只需要考虑之后的点
+//需要注意的是点可能有重复的，还有斜率不存在的情况
+    int maxPoints(vector<vector<int>>& points) {
+        unordered_map<double,int> hash;//<斜率，点数>
+        int max_num = 0;
+        int same = 0;
+        int same_x = 0;
+        int n = points.size();
+        for(int i = 0;i<n;++i)
+        {
+            same = 1;
+            same_x = 1;
+            for(int j = i+1;j<n;++j)
+            {
+                //斜率不存在的情况
+                if(points[j][0]==points[i][0])
+                {
+                    same_x ++;
+                    //重复点的情况
+                    if(points[j][1]==points[i][1])
+                    same++;
+                }
+                //考虑不同的斜率
+                else
+                {
+                    double dx = points[i][0]-points[j][0];
+                    double dy = points[i][1]-points[j][1];
+                    hash[dy/dx]++;
+                }
+            }
+            max_num = max(max_num,same_x);
+            for(auto tmp:hash)
+            max_num = max(max_num,same+tmp.second);
+            //换点的时候要清空
+            hash.clear();
+        }
+        return max_num;
+    }
+};
+
+
+//332：多重集合和映射
+class Solution {
+public:
+//多重集合和映射
+//使用hash表储存从起点可以到达的位置
+//要获得行程，那么从最后的终点出发，即没有可去地方的出发，倒序即利用栈
+//然后再倒序
+    vector<string> findItinerary(vector<vector<string>>& tickets) {
+        unordered_map<string,multiset<string>>hash;
+        vector<string> ans;
+        int n = tickets.size();
+        if(n==0)
+        return {};
+        //每个起点可以到达的位置
+        for(int i = 0;i<n;++i)
+        hash[tickets[i][0]].insert(tickets[i][1]);
+        stack<string> s;
+        s.push("JFK");
+        while(!s.empty())
+        {
+            string cur = s.top();
+            if(hash[cur].empty())
+            {
+            ans.push_back(cur);
+            s.pop();
+            }
+            else
+            {
+                //入栈
+                s.push(*hash[cur].begin());
+                //并删除
+                hash[cur].erase(hash[cur].begin());
+            }
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
     }
 };

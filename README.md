@@ -60,7 +60,18 @@ coding in python
 #### （1）MC_blackjack_control.py，基于MC的模型控制
 utils.py中的epsilon_greedy_policy的实现示意图：
 ![Image](https://github.com/MonaHe123/coding-exercise/blob/main/picture/IMG_E1226.JPG)
-#### （2）
+#### （2）基于TD的控制算法实现在文件NoModel_Control中  
+
+### NoModel_Contrl  
+Gym的使用和基于TD的无模型控制算法  
+
+#### gym.py  
+
+gym核心部分  
+
+#### windygrid.py  
+
+符合Gym环境基类接口的格子世界环境类，并在此基础上实现有风的格子世界、悬崖行走、随机行走等各种环境
 
 
 # daily_exercise
