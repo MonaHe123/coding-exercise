@@ -65,7 +65,7 @@ utils.py中的epsilon_greedy_policy的实现示意图：
 ### NoModel_Contrl  
 Gym的使用和基于TD的无模型控制算法  
 
-#### gym.py  
+#### gym_env.py  
 
 gym核心部分  
 

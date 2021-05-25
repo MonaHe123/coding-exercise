@@ -340,3 +340,87 @@ public:
         return ans;
     }
 };
+
+//303:前缀和
+//利用前缀数组进行求和
+class NumArray {
+    //前缀数组的使用
+    //vector的函数partial_sum计算所有前缀的和
+    //如果psum[i]储存的是0到i的数字的和
+    //那么i到j的和为：psum[j]-psum[i]+num[i]
+    //如果psum[i]为0到i-1的前缀和，那么i到j的和为：psum[j+1]-psum[i]
+    vector<int> psum;//前缀和数组
+public:
+    NumArray(vector<int>& nums):psum(nums.size()+1,0){
+        partial_sum(nums.begin(),nums.end(),psum.begin()+1);
+    }
+    
+    int sumRange(int left, int right) {
+        return psum[right+1]-psum[left];
+
+    }
+};
+
+/**
+ * Your NumArray object will be instantiated and called as such:
+ * NumArray* obj = new NumArray(nums);
+ * int param_1 = obj->sumRange(left,right);
+ */
+
+
+//304：积分图的使用
+class NumMatrix {
+    //数据预处理，建立积分图
+    vector<vector<int>> integral;
+public:
+    NumMatrix(vector<vector<int>>& matrix) {
+        //动态规划建立积分图
+        int m = matrix.size();
+        int n;
+        if(m>0)
+        n = matrix[0].size();
+        integral = vector<vector<int>>(m+1,vector<int>(n+1,0));
+        for(int i = 1;i<=m;++i)
+        for(int j = 1;j<=n;++j)
+        {
+            integral[i][j] = integral[i-1][j]+integral[i][j-1]-integral[i-1][j-1]+matrix[i-1][j-1];
+        }
+    }
+    
+    int sumRegion(int row1, int col1, int row2, int col2) {
+        return integral[row2+1][col2+1]-integral[row2+1][col1]-integral[row1][col2+1]+integral[row1][col1];
+    }
+};
+
+/**
+ * Your NumMatrix object will be instantiated and called as such:
+ * NumMatrix* obj = new NumMatrix(matrix);
+ * int param_1 = obj->sumRegion(row1,col1,row2,col2);
+ */
+
+
+//560：前缀和的使用
+class Solution {
+public:
+//前缀和的使用，假设从0开始的前缀和为psum，其数量为hash[psum]
+//那么和为k的数量为hash[psum-k]
+    int subarraySum(vector<int>& nums, int k) {
+        unordered_map<int,int> hash;
+        int n = nums.size();
+        int psum = 0;
+        int cnt = 0;
+        hash[0] = 1;
+        //下面的实现保证了k=0的时候不重复计数，但是也要保证num[0]=k成立，所以hash[0]=1
+        for(int i = 0;i<n;++i)
+        {
+            psum += nums[i];
+            //++hash[psum];
+            //这里的顺序很重要
+            //当k=0的时候，第一次更新的时候，并且连续和并不等于0，这里cnt加上的是hash[psum]
+            //此时应该加上0，所以先更新cnt，然后再更新hash，并且初始化的时候为1
+            cnt += hash[psum-k];
+            ++hash[psum];
+        }
+        return cnt;
+    }
+};
