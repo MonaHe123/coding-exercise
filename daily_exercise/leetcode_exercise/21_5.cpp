@@ -521,3 +521,53 @@ queue<int> q2;
  * int param_3 = obj->top();
  * bool param_4 = obj->empty();
  */
+
+
+//503:单调栈+循环数组
+class Solution {
+public:
+//首先直接想到的是遍历寻找每个数的后面找到比其大的数字
+//换一种思路，固定每个数，看这个数是哪些数刚好比这个数小
+//因为是最近的原则，也就是说固定每个数的时候应该考虑是否为离其最近的数字的大数
+//index靠后的先判断
+//所以用栈储存index
+//如果当前的数大于栈顶的数就弹栈找到符合条件的数
+//单调栈+循环数组
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        int n = nums.size();
+        //初始化为-1，因为当没有符合的数字的时候返回的是-1
+        vector<int> res(n,-1);
+        stack<int> s;
+        if(n==0)
+        return res;
+        for(int i = 0;i<2*n-1;++i)
+        {
+            while(!s.empty() && nums[s.top()]<nums[i%n])
+            {
+                res[s.top()] = nums[i%n];
+                s.pop();
+            }
+            s.push(i%n);
+        }
+        return res;
+    }
+};
+
+
+//217：hash数据结构的使用，set不能加入重复的数字
+class Solution {
+public:
+//方法一：进行排序，时间复杂度为o(nlogn)
+//方法二：使用set判断，因为set是基于hash表，所以判断插入元素是否存在的时间复杂度为o(1)
+    bool containsDuplicate(vector<int>& nums) {
+        unordered_set<int> s;
+        int n = nums.size();
+        for(int i = 0;i<n;++i)
+        {
+            if(s.find(nums[i])!=s.end())
+            return true;
+            s.insert(nums[i]);
+        }
+        return false;
+    }
+};
