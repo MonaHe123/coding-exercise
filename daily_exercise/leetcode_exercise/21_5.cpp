@@ -571,3 +571,102 @@ public:
         return false;
     }
 };
+
+
+//594:hash表的应用
+class Solution {
+public:
+//注意题目求的是子序列，是可以对元素进行删除的
+//方法一：遍历每个子序列的最小值，如果是x，那么再看x+1在序列中有多少个，num(x)+num(x+!)就是以x
+//作为Min的最长的子序列，这里需要对原数组和hash表都遍历一遍
+//方法二：遍历原数组一遍，对于x，需要对x-1和x+1进行数量判断，当遍历完成也就得到最长的子序列
+//关键是对x-1、x、x+1都要判断
+/*
+    int findLHS(vector<int>& nums) {
+//方法一：两次遍历
+    int n = nums.size();
+    unordered_map<int,int> hash;
+    //遍历原来的数组
+    for(int i = 0;i<n;++i)
+    {
+        if(hash.count(nums[i]))
+        hash[nums[i]]++;
+        else
+        {
+            hash[nums[i]] = 1;
+        }
+    }
+    //遍历hash表
+    int res = 0;
+    for(auto & tmp:hash)
+    {
+        if(hash.count(tmp.first+1))
+        res = max(res,tmp.second+hash[tmp.first+1]);
+    }
+    return res;
+    }*/
+
+    //方法二：只遍历一遍
+    int findLHS(vector<int>& nums)
+    {
+        int n = nums.size();
+        int res = 0;
+        unordered_map<int,int> hash;
+        for(int i = 0;i<n;++i)
+        {
+            if(hash.count(nums[i]))
+            hash[nums[i]]++;
+            else
+            hash[nums[i]] = 1;
+            //对x-1判断
+            //首先要判断是否存在
+            if(hash.count(nums[i]-1))
+            res = max(res,hash[nums[i]]+hash[nums[i]-1]);
+            //对x+1的判断
+            if(hash.count(nums[i]+1))
+            res = max(res,hash[nums[i]]+hash[nums[i]+1]);
+        }
+        return res;
+    }
+};
+
+
+//697：hash表的应用
+class Solution {
+public:
+//储存每个数字出现的次数和出现的最小和最大jindex
+//使用hash数据结构
+    int findShortestSubArray(vector<int>& nums) {
+        unordered_map<int,vector<int>> hash;
+        int n = nums.size();
+        for(int i = 0;i<n;++i)
+        {
+            if(hash.count(nums[i]))
+            {
+                hash[nums[i]][0]++;
+                hash[nums[i]][2]= i; 
+            }
+            else
+            {
+                //因为这里已经初始化vector为3，所以上面可以直接用下标
+                hash[nums[i]] = {1,i,i};
+            }
+        }
+        //遍历hash数组得到最多次数和最短的长度
+        int maxnum =0;
+        int minlen = 0;
+        for(auto& [_,vec]:hash)
+        {
+            if(vec[0]>maxnum)
+            {
+                maxnum = vec[0];
+                minlen = vec[2]-vec[1]+1;
+            }
+            else if(vec[0]==maxnum)
+            {
+                minlen = min(minlen,vec[2]-vec[1]+1);
+            }
+        }
+        return minlen;
+    }
+};
